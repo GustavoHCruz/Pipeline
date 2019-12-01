@@ -1,0 +1,1 @@
+Implementação de um simulador de Pipeline em Python.

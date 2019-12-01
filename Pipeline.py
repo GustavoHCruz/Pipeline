@@ -13,7 +13,7 @@ for i in range(quantidadeInstrucoes):
 aux = memoria[0].split(",")
 print("Auxiliar:",aux,"\n\nMemória:",memoria)
 
-x = "ola mano eu sou o dudi"
+x = "ola eu sou o dudi"
 x.replace(" ",",")
 
 print(x)
