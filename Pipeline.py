@@ -1,102 +1,122 @@
-# Tamanho da memória de instruções
-inst = 25
-# Tamanho da memória de dados
-mem = 20
-# Quantidade de Registradores
-reg = 10
-
-# Clock atual
-clock = 1
-
-# Registradores internos
-PC = 0
-IR = []
-IBR = []
-
-# Vetor com registradores em execução
-dep = []
-# Vetor com os comandos do pipeline
-pipeline = ["NIL","NIL","NIL","NIL"]
-# Código da operação atual
-opcode = 0
-
-# Função para inicializar a Memória de Dados
-def iniciar_memoria():
-   memoria = []
+def iniciar_memoria(memoria,mem):
    for i in range(mem):
       memoria.append(0)
-   return memoria
 
-# Função para inicializar os valores dos Registradores internos
-def iniciar_registradores():
-   registradores = []
+def iniciar_registradores(registradores,reg):
    for i in range(reg):
       registradores.append(0)
-   return registradores
 
-# Função para pegar e inicializar a Memória de Instruções
-def iniciar_instrucoes():
-   instrucoes = []
+def iniciar_instrucoes(instrucoes,inst):
    for i in range(inst):
       instrucoes.append(input())
-      instrucoes[i] = instrucoes[i].replace(" ",",")
-      instrucoes[i] = instrucoes[i].replace(",,",",")
-      instrucoes[i] = instrucoes[i].replace("$","")
-      instrucoes[i] = instrucoes[i].replace("\\","")
-      instrucoes[i] = instrucoes[i].replace("[","")
-      instrucoes[i] = instrucoes[i].replace("]","")
-   return instrucoes
 
-def UC(IR):
-   a = 0
+def UC(IBR):
+   opcode = IBR[0]
 
-def ULA(IBR,op):
-   if op == 1: # Soma
-      return = IBR[0] + IBR[1]
-   if op == 2: # Subtração
-      return = IBR[0] - IBR[1]
-   if op == 3: # Copia
-      return = IBR[1]
-
+   if opcode == "lw":
+      IBR[1] = IBR[1].replace("r","")
+      r1 = int(IBR[1])
+      registradores[r1] = memoria[int(IBR[2])]
+   elif opcode == "sw":
+      IBR[1] = IBR[1].replace("r","")
+      r1 = int(IBR[1])
+      memoria[int(IBR[2])] = registradores[r1]
+   elif opcode  == "li":
+      IBR[1] = IBR[1].replace("r","")
+      r1 = int(IBR[1])
+      registradores[r1] = IBR[2]
+   elif opcode == "move":
+      IBR[1] = IBR[1].replace("r","")
+      r1 = int(IBR[1])
+      IBR[2] = IBR[2].replace("r","")
+      r2 = int(IBR[2])
+      registradores[r1] = registradores[r2]
+   elif opcode == "add":
+      IBR[1] = IBR[1].replace("r","")
+      r1 = int(IBR[1])
+      IBR[2] = IBR[2].replace("r","")
+      r2 = int(IBR[2])
+      IBR[3] = IBR[3].replace("r","")
+      r3 = int(IBR[3])
+      registradores[r1] = registradores[r2] + registradores[r3]
+   elif opcode == "addi":
+      IBR[1] = IBR[1].replace("r","")
+      r1 = int(IBR[1])
+      IBR[2] = IBR[2].replace("r","")
+      r2 = int(IBR[2])
+      registradores[r1] = registradores[r2] + IBR[3]
+   elif opcode == "sub":
+      IBR[1] = IBR[1].replace("r","")
+      r1 = int(IBR[1])
+      IBR[2] = IBR[2].replace("r","")
+      r2 = int(IBR[2])
+      IBR[3] = IBR[3].replace("r","")
+      r3 = int(IBR[3])
+      registradores[r1] = registradores[r2] - registradores[r3]
+   elif opcode == "subi":
+      IBR[1] = IBR[1].replace("r","")
+      r1 = int(IBR[1])
+      IBR[2] = IBR[2].replace("r","")
+      r2 = int(IBR[2])
+      registradores[r1] = registradores[r2] - IBR[3]
 
 def imprimir():
-   print("Ciclo de Clock atual:",clock)
-   print("\nMemória de Dados:\n",memoria)
-   print("\nMemória de Registradores:\n",registradores)
-   print("\nRegistrador Interno:",PC)
-   print("\nPipeline:")
-   print("\nBusca de Instrução:",pipeline[0])
-   print("\nDecoficiação:",pipeline[1])
-   print("\nExecução:",pipeline[2])
-   print("\nEscrita:",pipeline[3])
+   print("\nCiclo de Clock atual:",clock)
+   print("Memória de Dados:\n",memoria)
+   print("Memória de Registradores:\n",registradores)
+   print("Registrador Interno:\nPC:",PC)
+   print("Pipeline:")
+   print("Busca de Instrução:",pipeline[0])
+   print("Decoficiação:",pipeline[1])
+   print("Execução:",pipeline[2])
+   print("Escrita:",pipeline[3])
 
-def busca():
+def busca(pipeline,PC,IR):
    pipeline[0] = instrucoes[PC]
-   IR = instrucoes[PC]
+   IR[0] = instrucoes[PC]
    PC = PC+1
 
-def decodificacao():
+def decodificacao(pipeline):
    pipeline[1] = IR
-   opcode = IBR[0]
-   IBR = IR.split(",")
-   IBR.pop(0)
+   aux = str(IR)
+   IBR = aux.split(",")
 
-def execucao():
+def execucao(pipeline):
    pipeline[2] = IR
+   UC(IBR)
 
-def escrita():
+def escrita(pipeline):
    pipeline[3] = IR
 
-def clock():
-   while i < inst:
-      i = i+1
+def executar(memoria,registradores,instrucoes,mem,reg,inst):
+   PC = 0 # Program Counter
+   IR = ["","","",""] # Instruction Register
+   IBR = ["","","",""] # Instruction Buffer Register
+   pipeline = ["","","",""] # Instruções dentro de cada etapa do pipeline
+
+   clock = 1
+   for i in range(inst):
+
+      busca(pipeline,PC,IR)
+      decodificacao(pipeline)
+      execucao(pipeline)
+      escrita(pipeline)
+
       imprimir()
       clock = clock+1
 
+def main():
+   inst = 1 # Tamanho da memória de instruções
+   mem = 20 # Tamanho da memória de dados
+   reg = 10 # Quantidade de registradores
 
-# Main
-memoria = iniciar_memoria()
-registradores = iniciar_registradores()
-instrucoes = iniciar_instrucoes()
+   memoria = [] # Memória de dados
+   registradores = [] # Lista dos registradores
+   instrucoes = [] # Memória de instruções
+   iniciar_memoria(memoria,mem) # Inicializa a memória de dados
+   iniciar_registradores(registradores,reg) # Inicializa a lista dos registradores
+   iniciar_instrucoes(instrucoes,inst) # Inicializa a memória de instruções
 
-clock()
+   executar(memoria,registradores,instrucoes,mem,reg,inst)
+
+main()
