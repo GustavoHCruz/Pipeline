@@ -60,7 +60,7 @@ def UC(IBR):
       r2 = int(IBR[2])
       registradores[r1] = registradores[r2] - IBR[3]
 
-def imprimir():
+def imprimir(clock,memoria,registradores,PC,pipeline):
    print("\nCiclo de Clock atual:",clock)
    print("Memória de Dados:\n",memoria)
    print("Memória de Registradores:\n",registradores)
@@ -71,38 +71,48 @@ def imprimir():
    print("Execução:",pipeline[2])
    print("Escrita:",pipeline[3])
 
-def busca(pipeline,PC,IR):
+def busca(pipeline,instrucoes,PC,IR):
    pipeline[0] = instrucoes[PC]
-   IR[0] = instrucoes[PC]
+   IR = instrucoes[PC]
+   print(IR)
    PC = PC+1
 
-def decodificacao(pipeline):
+def decodificacao(pipeline,IR,IBR):
    pipeline[1] = IR
-   aux = str(IR)
-   IBR = aux.split(",")
+   IBR = IR
+   IBR = IBR.replace(" ","")
+   IBR = IBR.replace(",,",",")
+   IBR = IBR.replace("$","")
+   IBR = IBR.replace("\\","")
+   IBR = IBR.replace("[","")
+   IBR = IBR.replace("]","")
+   IBR = IBR.split(",")
 
-def execucao(pipeline):
+def execucao(pipeline,IR,IBR):
    pipeline[2] = IR
    UC(IBR)
 
-def escrita(pipeline):
+def escrita(pipeline,IR):
    pipeline[3] = IR
 
-def executar(memoria,registradores,instrucoes,mem,reg,inst):
+def executar(*memoria,*registradores,*instrucoes,*mem,*reg,*inst):
    PC = 0 # Program Counter
-   IR = ["","","",""] # Instruction Register
-   IBR = ["","","",""] # Instruction Buffer Register
+   IR = "" # Instruction Register
+   IBR = "" # Instruction Buffer Register
    pipeline = ["","","",""] # Instruções dentro de cada etapa do pipeline
 
    clock = 1
    for i in range(inst):
 
-      busca(pipeline,PC,IR)
-      decodificacao(pipeline)
-      execucao(pipeline)
-      escrita(pipeline)
+      busca(pipeline,instrucoes,PC,IR)
+      print(IR)
+      decodificacao(pipeline,IR,IBR)
+      print(IR)
+      print(IBR)
+      #execucao(pipeline,IR,IBR)
+      #escrita(pipeline,IR)
 
-      imprimir()
+      imprimir(clock,memoria,registradores,PC,pipeline)
       clock = clock+1
 
 def main():
