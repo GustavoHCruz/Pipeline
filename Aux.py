@@ -1,87 +1,131 @@
-inst = 3 # Tamanho da memória de instruções
-mem = 20 # Tamanho da memória de dados
-reg = 10 # Quantidade de registradores
+inst = 0 # Tamanho da memória de instruções
+mem = 1 # Tamanho da memória de dados
+reg = 2 # Quantidade de registradores de uso geral
+PC = 3 # Program Counter
+IR = 4 # Instruction Register
+IBR = 5 # Instruction Buffer Register
+clock = 6
 
-memoria = [] # Memória de dados
+dicionario = {inst: 3,mem: 20,reg: 10,PC: 0,IR: "",IBR: "",clock: 1}
+memoria = [] # Memória de dados 
 registradores = [] # Lista dos registradores
 instrucoes = [] # Memória de instruções
 
-# Inicializa a memória de dados
-for i in range(mem):
-      memoria.append(0)
+pipeline = ["","","",""] # Instruções dentro de cada etapa do pipeline
 
-# Inicializa a lista dos registradores
-for i in range(reg):
+def inicializarMemoria():
+   for i in range(dicionario[mem]):
+      memoria.append(0)   
+
+def inicializarRegistradores():
+   for i in range(dicionario[reg]):
       registradores.append(0)
 
-# Inicializa a memória de instruções
-for i in range(inst):
+def inicializarInstrucoes():
+   for i in range(dicionario[inst]):
       instrucoes.append(input())
 
-PC = 0 # Program Counter
-IR = "" # Instruction Register
-IBR = "" # Instruction Buffer Register
-pipeline = ["","","",""] # Instruções dentro de cada etapa do pipeline
-clock = 1
+def busca():
+   pipeline[0] = instrucoes[dicionario[PC]]
+   dicionario[IR] = instrucoes[dicionario[PC]]
+   dicionario[PC] += 1
 
-# Execução
-for i in range(inst):
+def decodificacao():
+   pipeline[1] = dicionario[IR]
+   dicionario[IBR] = dicionario[IR]
+   dicionario[IBR] = dicionario[IBR].replace(" ",",")
+   dicionario[IBR] = dicionario[IBR].replace(",,",",")
+   dicionario[IBR] = dicionario[IBR].replace("$","")
+   dicionario[IBR] = dicionario[IBR].replace("r","")
+   dicionario[IBR] = dicionario[IBR].replace("\\","")
+   dicionario[IBR] = dicionario[IBR].replace("[","")
+   dicionario[IBR] = dicionario[IBR].replace("]","")
+   dicionario[IBR] = dicionario[IBR].split(",")
+   dicionario[IBR][1] = int(dicionario[IBR][1])
+   dicionario[IBR][2] = int(dicionario[IBR][2])
+   dicionario[IBR][-1] = int(dicionario[IBR][-1])
 
-   # Busca
-   pipeline[0] = instrucoes[PC]
-   IR = instrucoes[PC]
-   PC = PC+1
+def execucao():
+   pipeline[2] = dicionario[IR]
 
-   # Decodificação
-   pipeline[1] = IR
-   IBR = IR
-   IBR = IBR.replace(" ",",")
-   IBR = IBR.replace(",,",",")
-   IBR = IBR.replace("$","")
-   IBR = IBR.replace("\\","")
-   IBR = IBR.replace("[","")
-   IBR = IBR.replace("]","")
-   IBR = IBR.split(",")
+   r1 = dicionario[IBR][1]
+   r2 = dicionario[IBR][2]
+   r3 = dicionario[IBR][-1]
 
-   # Execucao
-   pipeline[2] = IR
-   # Unidade de Controle
-   r1 = IBR[1]
-   r1 = int(r1[-1])
-   r2 = IBR[2]
-   r2 = int(r2[-1])
-   r3 = IBR[-1]
-   r3 = r3.replace("r","")
-   r3 = int(r3)
+   if dicionario[IBR][0] == "lw":
+      resultado = memoria[r3]
+   elif dicionario[IBR][0] == "sw":
+      resultado = registradores[r1]
+   elif dicionario[IBR][0]  == "li":
+      resultado = r3
+   elif dicionario[IBR][0] == "move":
+      resultado = registradores[r2]
+   elif dicionario[IBR][0] == "add":
+      resultado = registradores[r2] + registradores[r3]
+   elif dicionario[IBR][0] == "addi":
+      restulado = registradores[r2] + r3
+   elif dicionario[IBR][0] == "sub":
+      resultado = registradores[r2] - registradores[r3]
+   elif dicionario[IBR][0] == "subi":
+      resultado = registradores[r2] - r3
+   
+   return resultado
 
-   if IBR[0] == "lw":
-      registradores[r1] = memoria[int(IBR[2])]
-   elif IBR[0] == "sw":
-      memoria[int(IBR[2])] = registradores[r1]
-   elif IBR[0]  == "li":
-      registradores[r1] = r3
-   elif IBR[0] == "move":
-      registradores[r1] = registradores[r2]
-   elif IBR[0] == "add":
-      registradores[r1] = registradores[r2] + registradores[r3]
-   elif IBR[0] == "addi":
-      registradores[r1] = registradores[r2] + r3
-   elif IBR[0] == "sub":
-      registradores[r1] = registradores[r2] - registradores[r3]
-   elif IBR[0] == "subi":
-      registradores[r1] = registradores[r2] - r3
+def escrita(resultado):
+   pipeline[3] = dicionario[IR]
 
-   # Escrita
-   pipeline[3] = IR
+   r1 = dicionario[IBR][1]
+   r2 = dicionario[IBR][2]
+   r3 = dicionario[IBR][-1]
 
-   # Impressão
-   print("\nCiclo de Clock atual:",clock)
+   if dicionario[IBR][0] == "lw":
+      registradores[r1] = resultado
+   elif dicionario[IBR][0] == "sw":
+      memoria[r2] = resultado
+   elif dicionario[IBR][0]  == "li":
+      registradores[r1] = resultado
+   elif dicionario[IBR][0] == "move":
+      registradores[r1] = resultado
+   elif dicionario[IBR][0] == "add":
+      registradores[r1] = resultado
+   elif dicionario[IBR][0] == "addi":
+      registradores[r1] = restulado
+   elif dicionario[IBR][0] == "sub":
+      registradores[r1] = resultado
+   elif dicionario[IBR][0] == "subi":
+      registradores[r1] = resultado
+
+def imprimir():
+   print("\nCiclo de Clock atual:",dicionario[clock])
    print("Memória de Dados:\n",memoria)
    print("Memória de Registradores:\n",registradores)
-   print("Registrador Interno:\nPC:",PC)
+   print("Registrador Interno:\nPC:",dicionario[PC])
    print("Pipeline:")
    print("Busca de Instrução:",pipeline[0])
    print("Decoficiação:",pipeline[1])
    print("Execução:",pipeline[2])
    print("Escrita:",pipeline[3])
-   clock = clock+1
+   dicionario[clock] += 1
+
+def simular():
+   for i in range(dicionario[inst]):
+
+      busca()
+
+      decodificacao()
+
+      saida = execucao()
+
+      escrita(saida)
+
+      imprimir()
+
+def main():
+
+   inicializarMemoria()
+   inicializarRegistradores()
+   inicializarInstrucoes()
+
+   simular()
+
+main()
