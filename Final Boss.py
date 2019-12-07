@@ -13,7 +13,6 @@ instrucoes = [] # Memória de instruções
 
 pipeline = ["NIL","NIL","NIL","NIL"] # Instruções dentro de cada etapa do pipeline
 IBR = ["NIL","NIL","NIL"]
-dep = [""] # Lista de registradores dentro do pipelile
 labels = []
 
 def inicializarMemoria():
@@ -28,10 +27,41 @@ def inicializarInstrucoes():
    for i in range(dicionario[inst]):
       instrucoes.append(input())
 
+def verificarDependencias():
+   cmd = instrucoes[dicionario[PC]]
+   dep = pipeline[1:4]
+
+   if cmd.find(":") == -1 or cmd.find("j") != -1:
+      return True
+
+   for i in range(len(dep)):
+      dep[i].replace(" ",",")
+      dep[i].replace(",,"",")
+      dep[i] = dep[i].split(",")
+
+   cmd = cmd.replace(" ",",")
+   cmd = cmd.replace(",,",",")
+   cmd = cmd.split(",")
+   r1 = cmd[1]
+   r2 = cmd[2]
+   r3 = cmd[-1]
+
+   for i in range(len(dep)):
+      if dep[i][1].find(r1) != -1 or dep[i][2].find(r1) != -1 or dep[i][-1].find(r1) != -1:
+         return True
+      if dep[i][1].find(r2) != -1 or dep[i][2].find(r2) != -1 or dep[i][-1].find(r2) != -1:
+         return True
+      if dep[i][1].find(r3) != -1 or dep[i][2].find(r3) != -1 or dep[i][-1].find(r3) != -1:
+         return True
+
+   return False
+   
+
 def busca():
-   pipeline[0] = instrucoes[dicionario[PC]]
-   dicionario[IR] = instrucoes[dicionario[PC]]
-   dicionario[PC] += 1
+   if verificarDependencias():
+      pipeline[0] = instrucoes[dicionario[PC]]
+      dicionario[IR] = instrucoes[dicionario[PC]]
+      dicionario[PC] += 1
 
 def decodificacao():
    IBR[0] = dicionario[IR]
@@ -101,13 +131,8 @@ def escrita(resultado):
    if len(IBR[2]) > 1:
       if len(IBR[2]) == 2:
          dicionario[PC] = resultado
-         pipeline[0] = "NIL"
-         pipeline[1] = "NIL"
-         pipeline[2] = "NIL"
-         pipeline[3] = "NIL"
-         IBR[0] = "NIL"
-         IBR[1] = "NIL"
-         IBR[2] = "NIL"
+         pipeline = ["NIL","NIL","NIL","NIL"]
+         IBR = ["NIL","NIL","NIL"]
       else:
          r1 = IBR[2][1]
          r2 = IBR[2][2]
