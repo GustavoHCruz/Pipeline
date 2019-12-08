@@ -6,7 +6,7 @@ IR = 4 # Instruction Register
 clock = 6
 pause = [0]
 
-dicionario = {inst: 10,mem: 20,reg: 10,PC: 0,IR: "",clock: 1}
+dicionario = {inst: 25,mem: 20,reg: 10,PC: 0,IR: "",clock: 1}
 memoria = [] # Memória de dados 
 registradores = [] # Lista dos registradores
 instrucoes = [] # Memória de instruções
