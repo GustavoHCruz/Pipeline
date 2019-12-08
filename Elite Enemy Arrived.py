@@ -47,7 +47,7 @@ def decodificacao():
       if len(IBR[0]) != 2:
          IBR[0][1] = int(IBR[0][1])
          IBR[0][2] = int(IBR[0][2])
-         if len(IBR[0]) != 4:
+         if IBR[0][0] != "beq":
             IBR[0][-1] = int(IBR[0][-1])
    else:
       IBR[0] = IBR[0].split(":")

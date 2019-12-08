@@ -31,37 +31,70 @@ def verificarDependencias():
    cmd = instrucoes[dicionario[PC]]
    dep = pipeline[1:4]
 
-   if cmd.find(":") == -1 or cmd.find("j") != -1:
-      return True
-
-   for i in range(len(dep)):
-      dep[i].replace(" ",",")
-      dep[i].replace(",,"",")
-      dep[i] = dep[i].split(",")
-
+   if cmd.find(":") != -1 or cmd.find("j") != -1:
+         return False
+         
    cmd = cmd.replace(" ",",")
    cmd = cmd.replace(",,",",")
    cmd = cmd.split(",")
-   r1 = cmd[1]
-   r2 = cmd[2]
-   r3 = cmd[-1]
+
+   r1 = cmd[2]
+   r2 = cmd[-1]
+
+   if r1.find("r") == -1:
+      r1 = "NULL"
+
+   if r2.find("r") == -1:
+      r2 = "NULL"
 
    for i in range(len(dep)):
-      if dep[i][1].find(r1) != -1 or dep[i][2].find(r1) != -1 or dep[i][-1].find(r1) != -1:
-         return True
-      if dep[i][1].find(r2) != -1 or dep[i][2].find(r2) != -1 or dep[i][-1].find(r2) != -1:
-         return True
-      if dep[i][1].find(r3) != -1 or dep[i][2].find(r3) != -1 or dep[i][-1].find(r3) != -1:
-         return True
+      if dep[i] != "NIL" and dep[i].find(":") == -1:
+         dep[i] = dep[i].replace(" ",",")
+         dep[i] = dep[i].replace(",,",",")
+         dep[i] = dep[i].split(",")
+         dep[i] = dep[i][0] + dep[i][1]
+
+      if dep[i].find("lw") != -1:
+         if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
+            return True
+
+      elif dep[i].find("li") != -1:
+         if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
+            return True
+
+      elif dep[i].find("move") != -1:
+         if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
+            return True
+
+      elif dep[i].find("add") != -1:
+         if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
+            return True
+
+      elif dep[i].find("addi") != -1:
+         if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
+            return True
+
+      elif dep[i].find("sub") != -1:
+         if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
+            return True
+
+      elif dep[i].find("subi") != -1:
+         if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
+            return True
+            
+      elif dep[i].find("beq") != -1:
+         if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
+            return True
 
    return False
-   
 
 def busca():
-   if verificarDependencias():
+   if not verificarDependencias():
       pipeline[0] = instrucoes[dicionario[PC]]
       dicionario[IR] = instrucoes[dicionario[PC]]
       dicionario[PC] += 1
+   else:
+      pipeline[0] = "NIL"
 
 def decodificacao():
    IBR[0] = dicionario[IR]
@@ -77,7 +110,7 @@ def decodificacao():
       if len(IBR[0]) != 2:
          IBR[0][1] = int(IBR[0][1])
          IBR[0][2] = int(IBR[0][2])
-         if len(IBR[0]) != 4:
+         if IBR[0][0] != "beq":
             IBR[0][-1] = int(IBR[0][-1])
    else:
       IBR[0] = IBR[0].split(":")
@@ -126,8 +159,9 @@ def execucao():
       
    return resultado
 
-
 def escrita(resultado):
+   global IBR
+   global pipeline
    if len(IBR[2]) > 1:
       if len(IBR[2]) == 2:
          dicionario[PC] = resultado
