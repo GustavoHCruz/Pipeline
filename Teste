@@ -27,7 +27,7 @@ li $r2, 2000
 label3:
 
 Resposta esperada:
-Clock Final: 40
+Clock Final: Sem estimativa
 PC: 25
 Memória de Dados:
 [0, 0, 0, 10, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

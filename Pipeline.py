@@ -1,8 +1,7 @@
-dictionary = {"inst": 25,"mem": 20,"reg": 10,"PC": 0,"IR": "","clock": 1}
+dictionary = {"inst":25,"mem":20,"reg":10,"PC":0,"IR":"","clock":1,"hazard":0,"pause":0}
 memory = []
 registers = []
 instructions = []
-pause = [0]
 
 pipeline = ["NIL","NIL","NIL","NIL"]
 IBR = ["NIL","NIL","NIL"]
@@ -22,7 +21,7 @@ def initialize():
          labels[aux[0]] = i
 
 def hazardControl():
-   cmd = instructions[dictionary["PC"]]
+   cmd = pipeline[1]
    dep = pipeline[1:4]
 
    if cmd.find(":") != -1 or cmd.find("j") != -1:
@@ -54,32 +53,35 @@ def hazardControl():
    return False
 
 def fetch():
-   if not hazardControl():
-      pipeline[0] = instructions[dictionary["PC"]]
-      dictionary["IR"] = instructions[dictionary["PC"]]
-      dictionary["PC"] += 1
-   else:
-      pipeline[0] = "NIL"
+   pipeline[0] = instructions[dictionary["PC"]]
+   dictionary["IR"] = instructions[dictionary["PC"]]
+   dictionary["PC"] += 1
 
 def decode():
-   IBR[0] = dictionary["IR"]
-   if IBR[0].find(":") == -1:
-      IBR[0] = IBR[0].replace(" ",",")
-      IBR[0] = IBR[0].replace(",,",",")
-      IBR[0] = IBR[0].replace("\\","")
-      IBR[0] = IBR[0].replace("$","")
-      IBR[0] = IBR[0].replace("r","")
-      IBR[0] = IBR[0].replace("[","")
-      IBR[0] = IBR[0].replace("]","")
-      IBR[0] = IBR[0].split(",")
-      if len(IBR[0]) != 2:
-         IBR[0][1] = int(IBR[0][1])
-         IBR[0][2] = int(IBR[0][2])
-         if IBR[0][0] != "beq":
-            IBR[0][-1] = int(IBR[0][-1])
+   if dictionary["hazard"] == 0:
+      IBR[0] = dictionary["IR"]
+      if IBR[0].find(":") == -1:
+         IBR[0] = IBR[0].replace(" ",",")
+         IBR[0] = IBR[0].replace(",,",",")
+         IBR[0] = IBR[0].replace("\\","")
+         IBR[0] = IBR[0].replace("$","")
+         IBR[0] = IBR[0].replace("r","")
+         IBR[0] = IBR[0].replace("[","")
+         IBR[0] = IBR[0].replace("]","")
+         IBR[0] = IBR[0].split(",")
+         if len(IBR[0]) != 2:
+            IBR[0][1] = int(IBR[0][1])
+            IBR[0][2] = int(IBR[0][2])
+            if IBR[0][0] != "beq":
+               IBR[0][-1] = int(IBR[0][-1])
+      else:
+         IBR[0] = IBR[0].split(":")
+         IBR[0] = IBR[0][1]
+
+   if hazardControl():
+      dictionary["hazard"] = 1
    else:
-      IBR[0] = IBR[0].split(":")
-      IBR[0] = IBR[0][1]
+      dictionary["hazard"] = 0
 
 def execute():
    result = 0
@@ -94,22 +96,22 @@ def execute():
 
       if IBR[1][0] == "lw":
          result = memory[r3]
-         pause[0] = 1
+         dictionary["pause"] = 1
       elif IBR[1][0] == "sw":
          result = registers[r1]
-         pause[0] = 1
+         dictionary["pause"] = 1
       elif IBR[1][0] == "li":
          result = r3
       elif IBR[1][0] == "move":
          result = registers[r2]
       elif IBR[1][0] == "add":
          result = registers[r2] + registers[r3]
-         pause[0] = 1
+         dictionary["pause"] = 1
       elif IBR[1][0] == "addi":
          result = registers[r2] + r3
       elif IBR[1][0] == "sub":
          result = registers[r2] - registers[r3]
-         pause[0] = 1
+         dictionary["pause"] = 1
       elif IBR[1][0] == "subi":
          result = registers[r2] - r3
       elif IBR[1][0] == "beq":
@@ -162,20 +164,28 @@ def simulate():
       if pipeline[3] != "NIL":
          write(result)
       
-      if pause[0] == 0:
-         IBR[1] = IBR[0]
-         pipeline[2] = pipeline[1]
-         if pipeline[2] != "NIL":
-            result = execute()
+      if dictionary["pause"] == 0:
+         if dictionary["hazard"] == 0:
+            IBR[1] = IBR[0]
+            pipeline[2] = pipeline[1]
+            if pipeline[2] != "NIL":
+               result = execute()
 
-         pipeline[1] = pipeline[0]
-         if pipeline[1] != "NIL":
+            if dictionary["hazard"] == 0:
+               pipeline[1] = pipeline[0]
+               if pipeline[1] != "NIL":
+                  decode()
+            
+               fetch()
+            else:
+               pipeline[1] = "NIL"
+               decode()
+         else:
+            pipeline[2] = "NIL"
             decode()
-      
-         fetch()
       else:
          pipeline[2] = "NIL"
-         pause[0] = 0
+         dictionary["pause"] = 0
       
       printPipeline()
    
@@ -185,20 +195,24 @@ def simulate():
       if pipeline[3] != "NIL":
          write(result)
       
-      if pause[0] == 0:
-         IBR[1] = IBR[0]
-         pipeline[2] = pipeline[1]
-         if pipeline[2] != "NIL":
-            result = execute()
+      if dictionary["pause"] == 0:
+         if dictionary["hazard"] == 0:
+            IBR[1] = IBR[0]
+            pipeline[2] = pipeline[1]
+            if pipeline[2] != "NIL":
+               result = execute()
 
-         pipeline[1] = pipeline[0]
-         if pipeline[1] != "NIL":
+            pipeline[1] = pipeline[0]
+            if pipeline[1] != "NIL":
+               decode()
+         
+            pipeline[0] = "NIL"
+         else:
+            pipeline[2] = "NIL"
             decode()
-      
-         pipeline[0] = "NIL"
       else:
          pipeline[2] = "NIL"
-         pause[0] = 0
+         dictionary["pause"] = 0
 
       printPipeline()
 
