@@ -20,7 +20,7 @@ sw $r0, [3]
 sw $r1, [4]
 lw $r8, [4]
 move r7, r3
-beq r3, r7, label3
+beq r1, r2, label3
 li $r0, 2000
 li $r1, 2000
 li $r2, 2000
@@ -49,9 +49,9 @@ Memória de Dados:
 Memória de Registradores:
 [0, 70, 60, 40, 0, 0, 0, 0, 0, 0]
 =====================================================================================
-Teste 3: (inst = 10)
+Teste 3: (inst = 9) //Somatório até 5
 
-li r0, 5
+li r0, 6
 li r1, 1
 loop:
 add r2, r2, r1
@@ -59,12 +59,11 @@ addi r1, r1, 1
 beq r1, r0, final
 j loop
 final:
-add r2, r2, r1
 sw r2, 0
 
 Resposta esperada:
-PC:10
+PC:9
 Memória de Dados:
 [15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Memória de Registradores:
-[5, 5, 15, 0, 0, 0, 0, 0, 0, 0]
+[6, 6, 15, 0, 0, 0, 0, 0, 0, 0]

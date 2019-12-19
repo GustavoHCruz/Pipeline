@@ -1,4 +1,4 @@
-dictionary = {"inst":10,"mem":20,"reg":10,"PC":0,"IR":"","clock":1,"hazard":0,"pause":0}
+dictionary = {"inst":9,"mem":20,"reg":10,"PC":0,"IR":"","clock":1,"hazard":0,"pause":0}
 memory = []
 registers = []
 instructions = []
@@ -158,7 +158,7 @@ def printPipeline():
    dictionary["clock"] += 1
 
 def simulate():
-   while dictionary["PC"] < len(instructions):
+   while True:
       IBR[2] = IBR[1]
       pipeline[3] = pipeline[2]
       if pipeline[3] != "NIL":
@@ -176,7 +176,10 @@ def simulate():
                if pipeline[1] != "NIL":
                   decode()
             
-               fetch()
+               if dictionary["PC"] < len(instructions):
+                  fetch()
+               else:
+                  pipeline[0] = "NIL"
             else:
                pipeline[1] = "NIL"
                decode()
@@ -189,33 +192,8 @@ def simulate():
       
       printPipeline()
    
-   while (pipeline[3] != "NIL") or (pipeline[2] != "NIL") or (pipeline[1] != "NIL"):
-      IBR[2] = IBR[1]
-      pipeline[3] = pipeline[2]
-      if pipeline[3] != "NIL":
-         write(result)
-      
-      if dictionary["pause"] == 0:
-         if dictionary["hazard"] == 0:
-            IBR[1] = IBR[0]
-            pipeline[2] = pipeline[1]
-            if pipeline[2] != "NIL":
-               result = execute()
-
-            pipeline[1] = pipeline[0]
-            if pipeline[1] != "NIL":
-               decode()
-
-            pipeline[0] = "NIL"
-         else:
-            pipeline[2] = "NIL"
-            decode()
-
-      else:
-         pipeline[2] = "NIL"
-         dictionary["pause"] = 0
-
-      printPipeline()
+      if (pipeline[3] == "NIL") and (pipeline[2] == "NIL") and (pipeline[1] == "NIL") and (pipeline[0] == "NIL"):
+         break
 
 initialize()
 
