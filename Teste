@@ -1,4 +1,4 @@
-Teste:
+Teste 1: (inst = 25)
 
 li $r0, 10
 li $r1, 20
@@ -20,16 +20,51 @@ sw $r0, [3]
 sw $r1, [4]
 lw $r8, [4]
 move r7, r3
-beq r1, r3, label3
+beq r3, r7, label3
 li $r0, 2000
 li $r1, 2000
 li $r2, 2000
 label3:
 
 Resposta esperada:
-Clock Final: Sem estimativa
 PC: 25
 Memória de Dados:
 [0, 0, 0, 10, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Memória de Registradores:
 [2000, 2000, 2000, 80, 95, 5, 60, 80, 20, 0]
+=====================================================================================
+Teste 2: (inst = 6)
+
+li r1, 10
+li r2, 20
+li r3, 40
+add r1, r1, r2
+add r2, r2, r3
+add r1, r1, r3
+
+Resposta esperada:
+PC:6
+Memória de Dados:
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[0, 70, 60, 40, 0, 0, 0, 0, 0, 0]
+=====================================================================================
+Teste 3: (inst = 10)
+
+li r0, 5
+li r1, 1
+loop:
+add r2, r2, r1
+addi r1, r1, 1
+beq r1, r0, final
+j loop
+final:
+add r2, r2, r1
+sw r2, 0
+
+Resposta esperada:
+PC:10
+Memória de Dados:
+[15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[5, 5, 15, 0, 0, 0, 0, 0, 0, 0]

@@ -1,10 +1,10 @@
-dictionary = {"inst":25,"mem":20,"reg":10,"PC":0,"IR":"","clock":1,"hazard":0,"pause":0}
+dictionary = {"inst":10,"mem":20,"reg":10,"PC":0,"IR":"","clock":1,"hazard":0,"pause":0}
 memory = []
 registers = []
 instructions = []
 
 pipeline = ["NIL","NIL","NIL","NIL"]
-IBR = ["NIL","NIL","NIL"]
+IBR = ["NIL","NIL","NIL"] # Instruction Buffer Register
 labels = {}
 
 def initialize():
@@ -22,7 +22,7 @@ def initialize():
 
 def hazardControl():
    cmd = pipeline[1]
-   dep = pipeline[1:4]
+   dep = pipeline[2:4]
 
    if cmd.find(":") != -1 or cmd.find("j") != -1:
          return False
@@ -205,11 +205,12 @@ def simulate():
             pipeline[1] = pipeline[0]
             if pipeline[1] != "NIL":
                decode()
-         
+
             pipeline[0] = "NIL"
          else:
             pipeline[2] = "NIL"
             decode()
+
       else:
          pipeline[2] = "NIL"
          dictionary["pause"] = 0
