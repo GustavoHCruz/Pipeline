@@ -49,7 +49,32 @@ Memória de Dados:
 Memória de Registradores:
 [0, 70, 60, 40, 0, 0, 0, 0, 0, 0]
 =====================================================================================
-Teste 3: (inst = 9) //Somatório até 5
+Teste 3: (inst = 15)
+
+j label1
+label2:
+j label3
+label4:
+j label5
+label6:
+j final
+label5:
+j label6
+label3:
+j label4
+label1:
+j label2
+final:
+li r1, 40
+
+Resposta esperada:
+PC:15
+Memória de Dados:
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[0, 40, 0, 0, 0, 0, 0, 0, 0, 0]
+=====================================================================================
+Teste 4: (inst = 9) //Somatório até 5
 
 li r0, 6
 li r1, 1

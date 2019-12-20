@@ -1,4 +1,4 @@
-dictionary = {"inst":9,"mem":20,"reg":10,"PC":0,"IR":"","clock":1,"hazard":0,"pause":0}
+dictionary = {"inst":25,"mem":20,"reg":10,"PC":0,"IR":"","clock":1,"hazard":0,"pause":0}
 memory = []
 registers = []
 instructions = []
