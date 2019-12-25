@@ -159,6 +159,8 @@ def printPipeline():
 
 def simulate():
    while True:
+      printPipeline()
+
       IBR[2] = IBR[1]
       pipeline[3] = pipeline[2]
       if pipeline[3] != "NIL":
@@ -187,11 +189,9 @@ def simulate():
             pipeline[2] = "NIL"
             decode()
       else:
-         pipeline[2] = "NIL"
+         pipeline[3] = "NIL"
          dictionary["pause"] = 0
-      
-      printPipeline()
-   
+
       if (pipeline[3] == "NIL") and (pipeline[2] == "NIL") and (pipeline[1] == "NIL") and (pipeline[0] == "NIL"):
          break
 
