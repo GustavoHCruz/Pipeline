@@ -13,12 +13,19 @@ def initialize():
    global instructions
    memory = [0 for x in range(dictionary["mem"])]
    registers = [0 for x in range(dictionary["reg"])]
-   instructions = [input() for x in range(dictionary["inst"])]
 
+   PC_Max=0
+   real_position=0
    for i in range(dictionary["inst"]):
-      if instructions[i].find(":") != -1:
-         aux = instructions[i].split(":")
-         labels[aux[0]] = i
+      aux = input()
+      if aux.find(":") == -1:
+         instructions.append(aux)
+         real_position += 1
+      else:
+         PC_Max += 1
+         aux = aux.split(":")
+         labels[aux[0]] = real_position
+   dictionary["inst"] = dictionary["inst"] - PC_Max
 
 def hazardControl():
    cmd = pipeline[1]
@@ -146,7 +153,7 @@ def write(result):
             registers[r1] = result
 
 def printPipeline():
-   print("\n=========Current Clock:",dictionary["clock"],"========")
+   print("\n============Current Clock:",dictionary["clock"],"============")
    print("PC:",dictionary["PC"])
    print("Data Memory:\n",memory)
    print("Registers Memory:\n",registers)
@@ -161,12 +168,12 @@ def simulate():
    while True:
       printPipeline()
 
-      IBR[2] = IBR[1]
-      pipeline[3] = pipeline[2]
-      if pipeline[3] != "NIL":
-         write(result)
-      
       if dictionary["pause"] == 0:
+         IBR[2] = IBR[1]
+         pipeline[3] = pipeline[2]
+         if pipeline[3] != "NIL":
+            write(result)
+      
          if dictionary["hazard"] == 0:
             IBR[1] = IBR[0]
             pipeline[2] = pipeline[1]
