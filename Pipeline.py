@@ -201,6 +201,8 @@ def simulate():
 
       if (pipeline[3] == "NIL") and (pipeline[2] == "NIL") and (pipeline[1] == "NIL") and (pipeline[0] == "NIL"):
          break
+   
+   printPipeline()
 
 initialize()
 
