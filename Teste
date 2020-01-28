@@ -92,3 +92,22 @@ Memória de Dados:
 [15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Memória de Registradores:
 [6, 6, 15, 0, 0, 0, 0, 0, 0, 0]
+=====================================================================================
+Teste 5: (inst = 9) //Exemplo
+
+li $r1, 10
+li $r2, 20
+addi $r3, $r1, 20
+sub $r4, $r3, $r1
+beq \$r2, \$r4, label
+add $r2, $r4, $r3
+move $r5, $r2
+label :
+sw $r4, [10]
+
+Resposta esperada:
+PC: 8
+Memória de Dados:
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[0, 10, 20, 30, 20, 0, 0, 0, 0, 0]

@@ -23,6 +23,7 @@ def initialize():
          real_position += 1
       else:
          PC_Max += 1
+         aux = aux.replace(" ","")
          aux = aux.split(":")
          labels[aux[0]] = real_position
    dictionary["inst"] = dictionary["inst"] - PC_Max
@@ -49,9 +50,8 @@ def hazardControl():
 
    for i in range(len(dep)):
       if dep[i] != "NIL" and dep[i].find(":") == -1:
-         dep[i] = dep[i].replace(" ",",")
-         dep[i] = dep[i].replace(",,",",")
-         dep[i] = dep[i].split(",")
+         dep[i] = dep[i].replace(",","")
+         dep[i] = dep[i].split(" ")
          dep[i] = dep[i][0] + dep[i][1]
 
       if dep[i].find(r2) != -1 or dep[i].find(r1) != -1:
@@ -68,14 +68,13 @@ def decode():
    if dictionary["hazard"] == 0:
       IBR[0] = dictionary["IR"]
       if IBR[0].find(":") == -1:
-         IBR[0] = IBR[0].replace(" ",",")
-         IBR[0] = IBR[0].replace(",,",",")
+         IBR[0] = IBR[0].replace(",","")
          IBR[0] = IBR[0].replace("\\","")
          IBR[0] = IBR[0].replace("$","")
          IBR[0] = IBR[0].replace("r","")
          IBR[0] = IBR[0].replace("[","")
          IBR[0] = IBR[0].replace("]","")
-         IBR[0] = IBR[0].split(",")
+         IBR[0] = IBR[0].split(" ")
          if len(IBR[0]) != 2:
             IBR[0][1] = int(IBR[0][1])
             IBR[0][2] = int(IBR[0][2])
@@ -137,6 +136,8 @@ def write(result):
          dictionary["PC"] = result
          pipeline = ["NIL","NIL","NIL","NIL"]
          IBR = ["NIL","NIL","NIL"]
+         dictionary["pause"] = 0
+         dictionary["hazard"] = 0
       else:
          r1 = IBR[2][1]
          r2 = IBR[2][2]
@@ -149,6 +150,8 @@ def write(result):
                dictionary["PC"] = result
                pipeline = ["NIL","NIL","NIL","NIL"]
                IBR = ["NIL","NIL","NIL","NIL"]
+               dictionary["pause"] = 0
+               dictionary["hazard"] = 0
          else:
             registers[r1] = result
 
@@ -194,12 +197,13 @@ def simulate():
                decode()
          else:
             pipeline[2] = "NIL"
-            decode()
+            if pipeline[1] != "NIL":
+               decode()
       else:
          pipeline[3] = "NIL"
          dictionary["pause"] = 0
 
-      if (pipeline[3] == "NIL") and (pipeline[2] == "NIL") and (pipeline[1] == "NIL") and (pipeline[0] == "NIL"):
+      if (pipeline[3] == "NIL") and (pipeline[2] == "NIL") and (pipeline[1] == "NIL") and (pipeline[0] == "NIL") and dictionary["PC"] >= len(instructions):
          break
    
    printPipeline()
