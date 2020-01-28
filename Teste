@@ -1,29 +1,29 @@
 Teste 1: (inst = 25)
 
-li $r0, 10
-li $r1, 20
-li $r2, 60
-add $r3, $r1, $r2
-addi $r4, $r3, 15
-subi $r5, $r2, 55
+li $r1, 10
+li $r2, 20
+li $r3, 60
+add $r4, $r2, $r3
+addi $r5, $r4, 15
+subi $r6, $r3, 55
 j label1
-li $r0, 5000
 li $r1, 5000
 li $r2, 5000
+li $r3, 5000
 label1:
-li $r6, 60
-beq $r2, $r6, label2
-sw $r0, [0]
-sw $r1, [1]
+li $r7, 60
+beq $r3, $r7, label2
+sw $r1, [0]
+sw $r2, [1]
 label2:
-sw $r0, [3]
-sw $r1, [4]
-lw $r8, [4]
-move r7, r3
-beq r1, r2, label3
-li $r0, 2000
+sw $r1, [3]
+sw $r2, [4]
+lw $r9, [4]
+move $r8, $r4
+beq $r3, $r4, label3
 li $r1, 2000
 li $r2, 2000
+li $r3, 2000
 label3:
 
 Resposta esperada:
@@ -47,7 +47,7 @@ PC:6
 Memória de Dados:
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Memória de Registradores:
-[0, 70, 60, 40, 0, 0, 0, 0, 0, 0]
+[70, 60, 40, 0, 0, 0, 0, 0, 0, 0]
 =====================================================================================
 Teste 3: (inst = 15)
 
@@ -72,24 +72,24 @@ PC:8
 Memória de Dados:
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Memória de Registradores:
-[0, 40, 0, 0, 0, 0, 0, 0, 0, 0]
+[40, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 =====================================================================================
 Teste 4: (inst = 9) //Somatório até 5
 
-li r0, 6
-li r1, 1
+li r1, 6
+li r2, 1
 loop:
-add r2, r2, r1
-addi r1, r1, 1
-beq r1, r0, final
+add r3, r3, r2
+addi r2, r2, 1
+beq r2, r1, final
 j loop
 final:
-sw r2, 0
+sw r3, 1
 
 Resposta esperada:
 PC:7
 Memória de Dados:
-[15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Memória de Registradores:
 [6, 6, 15, 0, 0, 0, 0, 0, 0, 0]
 =====================================================================================
@@ -110,4 +110,4 @@ PC: 8
 Memória de Dados:
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Memória de Registradores:
-[0, 10, 20, 30, 20, 0, 0, 0, 0, 0]
+[10, 20, 30, 20, 0, 0, 0, 0, 0, 0]
