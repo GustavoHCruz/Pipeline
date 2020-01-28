@@ -1,0 +1,113 @@
+Teste 1: (inst = 25)
+
+li $r1, 10
+li $r2, 20
+li $r3, 60
+add $r4, $r2, $r3
+addi $r5, $r4, 15
+subi $r6, $r3, 55
+j label1
+li $r1, 5000
+li $r2, 5000
+li $r3, 5000
+label1:
+li $r7, 60
+beq $r3, $r7, label2
+sw $r1, [0]
+sw $r2, [1]
+label2:
+sw $r1, [3]
+sw $r2, [4]
+lw $r9, [4]
+move $r8, $r4
+beq $r3, $r4, label3
+li $r1, 2000
+li $r2, 2000
+li $r3, 2000
+label3:
+
+Resposta esperada:
+PC: 22
+Memória de Dados:
+[0, 0, 0, 10, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[2000, 2000, 2000, 80, 95, 5, 60, 80, 20, 0]
+=====================================================================================
+Teste 2: (inst = 6)
+
+li r1, 10
+li r2, 20
+li r3, 40
+add r1, r1, r2
+add r2, r2, r3
+add r1, r1, r3
+
+Resposta esperada:
+PC:6
+Memória de Dados:
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[70, 60, 40, 0, 0, 0, 0, 0, 0, 0]
+=====================================================================================
+Teste 3: (inst = 15)
+
+j label1
+label2:
+j label3
+label4:
+j label5
+label6:
+j final
+label5:
+j label6
+label3:
+j label4
+label1:
+j label2
+final:
+li r1, 40
+
+Resposta esperada:
+PC:8
+Memória de Dados:
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[40, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+=====================================================================================
+Teste 4: (inst = 9) //Somatório até 5
+
+li r1, 6
+li r2, 1
+loop:
+add r3, r3, r2
+addi r2, r2, 1
+beq r2, r1, final
+j loop
+final:
+sw r3, 1
+
+Resposta esperada:
+PC:7
+Memória de Dados:
+[0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[6, 6, 15, 0, 0, 0, 0, 0, 0, 0]
+=====================================================================================
+Teste 5: (inst = 9) //Exemplo
+
+li $r1, 10
+li $r2, 20
+addi $r3, $r1, 20
+sub $r4, $r3, $r1
+beq \$r2, \$r4, label
+add $r2, $r4, $r3
+move $r5, $r2
+label :
+sw $r4, [10]
+
+Resposta esperada:
+PC: 8
+Memória de Dados:
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Memória de Registradores:
+[10, 20, 30, 20, 0, 0, 0, 0, 0, 0]
