@@ -1,3 +1,14 @@
+Instruções aceitas:
+lw registrador, memória                     - Carrega da memória o conteúdo do registrador
+sw registrador, memória                     - Salva na memória o conteúdo do registrador
+li registrador, valor                       - Atribui um valor ao registrador
+move registrador, registrador               - Move um valor de um registrador para outro
+add registrador, registrador, registrador   - Soma dois registradores e coloca o resultado em outro
+addi registrador, registrador, valor        - Soma um registrador com o valor passado e coloca o resultado em outor registrador
+sub registrador, registrador, registrador   - Subtrai dois registradores e coloca o resultado em outro
+subi registrador, registrador, valor        - Subtrai um registrador com o valor passado e coloca o resultado em outor registrador
+beq registrador, registrador, label         - Compara se os dois registradores são iguais e salta para label caso verdadeiro
+=====================================================================================
 Teste 1: (inst = 25)
 
 li $r1, 10

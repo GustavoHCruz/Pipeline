@@ -1,1 +1,1 @@
-Implementação de um simulador de Pipeline em Python.
+Implementation of a simple Pipeline simulator in Python.
