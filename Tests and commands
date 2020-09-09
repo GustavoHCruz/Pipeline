@@ -1,15 +1,15 @@
-Instruções aceitas:
-lw registrador, memória                     - Carrega da memória o conteúdo do registrador
-sw registrador, memória                     - Salva na memória o conteúdo do registrador
-li registrador, valor                       - Atribui um valor ao registrador
-move registrador, registrador               - Move um valor de um registrador para outro
-add registrador, registrador, registrador   - Soma dois registradores e coloca o resultado em outro
-addi registrador, registrador, valor        - Soma um registrador com o valor passado e coloca o resultado em outor registrador
-sub registrador, registrador, registrador   - Subtrai dois registradores e coloca o resultado em outro
-subi registrador, registrador, valor        - Subtrai um registrador com o valor passado e coloca o resultado em outor registrador
-beq registrador, registrador, label         - Compara se os dois registradores são iguais e salta para label caso verdadeiro
+Commands accepted:
+lw register, memory                     - Load from memory position content in the register
+sw register, memory                     - Save in memory the register's content.
+li register, value                      - Assign a value to the register
+move register, register                 - Move a value from a register to other.
+add register, register, register        - Sum two registers and place the result in other.
+addi register, register, value          - Sum a register with the given value and puts the result in other register
+sub register, register, register        - Subtract two registers and place the result in other.
+subi register, register, value          - Subtract from register the given value and puts the result in other register
+beq register, register, label           - Compare if the two registers are equal and jump to the label if true
 =====================================================================================
-Teste 1: (inst = 25)
+Test 1:
 
 li $r1, 10
 li $r2, 20
@@ -37,14 +37,14 @@ li $r2, 2000
 li $r3, 2000
 label3:
 
-Resposta esperada:
+Expected response:
 PC: 22
-Memória de Dados:
+Data Memory:
 [0, 0, 0, 10, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Memória de Registradores:
+Registers Memory:
 [2000, 2000, 2000, 80, 95, 5, 60, 80, 20, 0]
 =====================================================================================
-Teste 2: (inst = 6)
+Test 2: (inst = 6)
 
 li r1, 10
 li r2, 20
@@ -53,14 +53,14 @@ add r1, r1, r2
 add r2, r2, r3
 add r1, r1, r3
 
-Resposta esperada:
+Expected response:
 PC:6
-Memória de Dados:
+Data Memory:
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Memória de Registradores:
+Registers Memory:
 [70, 60, 40, 0, 0, 0, 0, 0, 0, 0]
 =====================================================================================
-Teste 3: (inst = 15)
+Test 3:
 
 j label1
 label2:
@@ -78,14 +78,14 @@ j label2
 final:
 li r1, 40
 
-Resposta esperada:
+Expected response:
 PC:8
-Memória de Dados:
+Data Memory:
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Memória de Registradores:
+Registers Memory:
 [40, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 =====================================================================================
-Teste 4: (inst = 9) //Somatório até 5
+Test 4: //5 Summation
 
 li r1, 6
 li r2, 1
@@ -97,14 +97,14 @@ j loop
 final:
 sw r3, 1
 
-Resposta esperada:
+Expected response:
 PC:7
-Memória de Dados:
+Data Memory:
 [0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Memória de Registradores:
+Registers Memory:
 [6, 6, 15, 0, 0, 0, 0, 0, 0, 0]
 =====================================================================================
-Teste 5: (inst = 9) //Exemplo
+Test 5:
 
 li $r1, 10
 li $r2, 20
@@ -116,9 +116,9 @@ move $r5, $r2
 label :
 sw $r4, [10]
 
-Resposta esperada:
+Expected response:
 PC: 8
-Memória de Dados:
+Data Memory:
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Memória de Registradores:
+Registers Memory:
 [10, 20, 30, 20, 0, 0, 0, 0, 0, 0]
